@@ -1,58 +1,66 @@
 using System;
 
 
-public class DataProvider : IEullerAlgorithmDataProvider
+public class DataProvider : IDataProvider
 {
-    readonly CellData[,] CellsData;
+    readonly CellData[] CellsData;
     int Width;
     int Height;
 
-    public DataProvider(int width, int height)
+    public bool ContainsBottomBorder(int position)
     {
-        Width = width;
-        Height = height;
-        CellsData = new CellData[width, height];
+        return (CellsData[position].Borders & BorderData.Bottom) != 0;
+    }
+    public bool ContainsRightBorder(int position)
+    {
+        return (CellsData[position].Borders & BorderData.Right) != 0;
     }
 
-
-    public bool ContainsBottomBorder(int x, int y)
+    public byte GetGroup(int position)
     {
-        return CellsData[x, y].Borders.IsDownBorder();
+        return CellsData[position].Group;
     }
-
-    public byte GetGroup(int x, int y)
+    public void SetGroup(int position, byte group)
     {
-        return CellsData[x, y].Group;
+        CellsData[position].Group = group;
     }
 
     public int GetHeight()
     {
         return Height;
     }
-
     public int GetWidth()
     {
         return Width;
     }
 
-    public bool ContainsRightBorder(int x, int y)
+    public void InsertBottomBorder(int position, bool state = true)
     {
-        return CellsData[x, y].Borders.IsRightBorder();
+        CellsData[position].InsertBottomBorder(state);
+    }
+    public void InsertRightBorder(int position, bool state = true)
+    {
+        CellsData[position].InsertRightBorder(state);
     }
 
-    public void InsertDownBorder(int x, int y, bool state = true)
+    object ICloneable.Clone()
     {
-        CellsData[x, y].InsertBottomBorder(state);
+        return Clone();
+    }
+    public DataProvider Clone()
+    {
+        var clone = new DataProvider(Width, Height);
+        CellsData.CopyTo(CellsData, 0);
+        return clone;
     }
 
-    public void SetGroup(int x, int y, byte group)
+    private DataProvider() : this(1) { }
+    public DataProvider(int side) : this(side, side) {  }
+    public DataProvider(int width,int height)
     {
-        CellsData[x, y].Group = group;
-    }
-
-    public void InsertRightBorder(int x, int y, bool state = true)
-    {
-        CellsData[x, y].InsertRightBorder(state);
+        Width = width;
+        Height = height;
+        CellsData = new CellData[width * height];
     }
 }
 
@@ -89,7 +97,7 @@ public static class BorderDataExtenter
         return (data & BorderData.Right) != 0;
     }
 
-    public static bool IsDownBorder(this BorderData data)
+    public static bool IsBottomBorder(this BorderData data)
     {
         return (data & BorderData.Bottom) != 0;
     }

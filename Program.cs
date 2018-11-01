@@ -22,6 +22,8 @@ namespace EulersAlgorithm
 
             DrawData(maze.Data);
             Console.BackgroundColor = ConsoleColor.Black;
+
+            Console.ReadKey();
         }
 
         static void DrawData(IEullerAlgorithmDataProvider data)

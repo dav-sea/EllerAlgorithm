@@ -1,33 +1,39 @@
+using EllerAlgorithm;
 using System;
+using Data = IDataProvider;
+using Seeder = EullerAlgorithmSeeder;
 
-public class EullerAlgorithm
+public class EllerMazeGenerator
 {
-    public IEullerAlgorithmDataProvider Data = new DataProvider(10, 10);
-    EullerAlgorithmSeeder Seeder = new EullerAlgorithmSeeder();
+    DataEllerAlgorithmLogic DataLogic;
+    Random Randomer;
 
-    public void Generate()
+    double RandomBetweenColumnBorder = 0.25, RandomBetweenRowBorder = 0.9f;
+    int Width, Height;
+
+    public DataProvider Generate()
     {
-        for (int i = 0; i < Data.GetWidth(); i++)
-            Data.InsertDownBorder(i, Data.GetHeight() - 1);
-        for (int i = 0; i < Data.GetHeight(); i++)
-            Data.InsertRightBorder(Data.GetWidth() - 1, i);
+        var data = new DataProvider(Width, Height);
+        DataLogic.SetDataProvider(data);
 
-        for (int i = 0; i < Data.GetHeight() - 1; i++)
-        {
-            FillGroups(i);
-            CalculateRightBorders(i);
-            CalculateBottomBorders(i);
-            ProcessNextRow(i);
-        }
-        FillGroups(Data.GetHeight() - 1);
-        CalculateRightBorders(Data.GetHeight() - 1);
-        CalculateBottomBorders(Data.GetHeight() - 1);
-    }
+        return data;
+        //for (int i = 0; i < Data.GetWidth(); i++)
+        //    Data.InsertDownBorder(i, Data.GetHeight() - 1);
+        //for (int i = 0; i < Data.GetHeight(); i++)
+        //    Data.InsertRightBorder(Data.GetWidth() - 1, i);
 
-    void Borders()
-    {
-        for (int i = 0; i < Data.GetWidth(); i++)
-            Data.InsertDownBorder(i, Data.GetHeight() - 1);
+        //for (int i = 0; i < Data.GetHeight() - 1; i++)
+        //{
+        //    FillGroups(i);
+        //    CalculateRightBorders(i);
+        //    CalculateBottomBorders(i);
+        //    ProcessNextRow(i);
+        //}
+        //FillGroups(Data.GetHeight() - 1);
+        //CalculateRightBorders(Data.GetHeight() - 1);
+        //CalculateBottomBorders(Data.GetHeight() - 1);
+
+
     }
 
     void FillGroups(int row)
@@ -59,4 +65,12 @@ public class EullerAlgorithm
         FillGroups(row);
     }
 
+    public bool BetweenColumnBorder()
+    {
+        return Randomer.NextDouble() <= RandomBetweenColumnBorder;
+    }
+    public bool BetweenRowBorder()
+    {
+        return Randomer.NextDouble() <= RandomBetweenRowBorder;
+    }
 }

@@ -6,11 +6,12 @@ public class EullerAlgorithmSeeder
     // int RandomBetweenColumnBorder = 4, RandomBetweenRowBorder = 5;
 
     double RandomBetweenColumnBorder = 0.25, RandomBetweenRowBorder = 0.9f;
-    public bool BetweenColumnBorder(int xl, int xr, int row)
+
+    public bool BetweenColumnBorder()
     {
         return Randomer.NextDouble() <= RandomBetweenColumnBorder;
     }
-    public bool BetweenRowBorder(int yl, int yr, int column)
+    public bool BetweenRowBorder()
     {
         return Randomer.NextDouble() <= RandomBetweenRowBorder;
     }
