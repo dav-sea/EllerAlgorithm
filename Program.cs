@@ -8,30 +8,29 @@ namespace EulersAlgorithm
         {
             int width = (10) * 2 + 1, height = (10) * 2 + 1;
 
-            var maze = new EullerAlgorithm();
-            maze.Generate();
+            var maze = new EllerMazeGenerator();
+            var data = maze.Generate();
 
             // Console.Write(" ");
             // for (int i = 0; i < maze.Data.GetWidth(); i++)
             //     Console.Write($"{i} ");
             // Console.WriteLine();
-            for (int i = 0; i < maze.Data.GetWidth(); i++)
-                Console.Write("----");
+            
             Console.WriteLine();
 
 
-            DrawData(maze.Data);
+            DrawData(data);
             Console.BackgroundColor = ConsoleColor.Black;
 
             Console.ReadKey();
         }
 
-        static void DrawData(IEullerAlgorithmDataProvider data)
+        static void DrawData(IDataProvider data)
         {
             for (int i = 0; i < data.GetHeight(); i++)
                 DrawRow(data, i);
         }
-        static void DrawRow(IEullerAlgorithmDataProvider data, int row)
+        static void DrawRow(IDataProvider data, int row)
         {
 
             for (int i = 0; i < data.GetWidth(); i++)

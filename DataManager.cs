@@ -30,6 +30,12 @@ namespace EllerAlgorithm
                     mData.SetGroup(beginPosition, GetNextGroup(beginPosition));
         }
 
+        public void FillGroupsRow(int row)
+        {
+            row *= mHeight;
+            FillGroups(row, row + mWidth - 1);
+        }
+
         public byte GetNextGroup(int position)
         {
             //Считаем ряд и сдигаем его на 1 вправо 
@@ -37,8 +43,110 @@ namespace EllerAlgorithm
             return (byte)(position % mHeight + 1);
         }
 
+        public void UniteWithNext(int position)
+        {
+            mData.SetGroup(position, mData.GetGroup(position++));
+        }
+
+        public void Unite(int startPosition, int endPosition,byte group)
+        {
+            for (; startPosition < endPosition; startPosition++)
+                mData.SetGroup(startPosition, group);
+        }
+
+        public void PreventDuplicates(int startPosition,int endPosition)
+        {
+            for (; startPosition < endPosition;)
+                if (mData.GetGroup(startPosition++) == mData.GetGroup(startPosition))
+                    mData.InsertRightBorder(startPosition - 1);
+        }
+
+        public void PreventDuplicatesRow(int row)
+        {
+            row *= mHeight;
+            PreventDuplicates(row , row + mWidth - 1);
+        }
 
 
+
+        public int CountCellsInRelativeGroup(int position)
+        {
+            var count = 1;
+            var group = mData.GetGroup(position);
+            
+            while (mData.GetGroup(++position) == group) count++;
+            position -= count + 1;
+            while (mData.GetGroup(--position) == group) count++;
+
+            return count;
+        }
+
+        public int CountCellsInGroupConsiderRightBorders(int position)
+        {
+            var count = 1;
+            var group = mData.GetGroup(position);
+
+            while (!mData.ContainsRightBorder(position++) && mData.GetGroup(position) == group) count++;
+            position -= count + 1;
+            while (!mData.ContainsRightBorder(position--) && mData.GetGroup(position) == group) count++;
+
+            return count;
+        }
+
+        public void EliminateClosedCells(int position, int count)
+        {
+            bool correctly = false;
+
+            for (int i = 0; ; i++)
+            {
+                if (!correctly && !mData.ContainsBottomBorder(position + i))
+                {
+                    correctly = true;
+                }
+                if (mData.ContainsRightBorder(position + i))
+                {
+                    if (correctly == false)
+                        mData.InsertBottomBorder(position + i, false);
+                    else
+                        correctly = false;
+                }
+                if (i >= count - 1)
+                {
+                    if (correctly == false)
+                        mData.InsertBottomBorder(position + i, false);
+                    break;
+                }
+            }
+        }
+
+        //public int[] GetGroup(int position)
+        //{
+        //    byte group = mData.GetGroup(position);
+        //    List<int> positions = new List<int>();
+
+        //    while (mData.GetGroup(++position) == group) positions.Add(position);
+        //    position -= positions.Count + 1;
+        //    while (mData.GetGroup(--position) == group) positions.Add(position);
+
+        //    return positions.ToArray();
+        //}
+
+        //public int[] GetGroupConsiderRightBorders(int position)
+        //{
+        //    byte group = mData.GetGroup(position);
+        //    List<int> positions = new List<int>();
+
+        //    while (!mData.ContainsRightBorder(position++) && mData.GetGroup(position) == group) positions.Add(position);
+        //    position -= positions.Count + 1;
+        //    while (!mData.ContainsRightBorder(position--) && mData.GetGroup(position) == group) positions.Add(position);
+
+        //    return positions.ToArray();
+        //}
+
+        //public void EliminateClosedGroup(int[] group)
+        //{
+
+        //}
         //public void CopyBottomBorders(int sourcePosition, int targetPosition, int count)
         //{
         //    UpdateSize();
